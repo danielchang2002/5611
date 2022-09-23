@@ -52,10 +52,13 @@ float COR = 0.7;
 Vec2 gravity = new Vec2(0,10);
 float blueMass = 1;
 float redMass = 100;
+float maxTime = 100;
 
 //Initalalize variable
 Vec2 pos[] = new Vec2[maxParticles];
 Vec2 vel[] = new Vec2[maxParticles];
+int time[] = new int[maxParticles];
+Vec2 bounce[] = new Vec2[maxParticles];
 int numParticles = 0;
 
 void setup(){
@@ -72,12 +75,13 @@ void update(float dt){
   float fractPart = toGen_float - toGen;
   if (random(1) < fractPart) toGen += 1;
   for (int i = 0; i < toGen; i++){
-    if (numParticles >= maxParticles) break;
+    // if (numParticles >= maxParticles) break;
     pos[numParticles] = new Vec2(20+random(20),200+random(20));
     //  2. Randomize the initial particle velocities so that xVel starts in the range (30,90),
 //     and yVel starts in the range (-190, -200)
     vel[numParticles] = new Vec2(30 + random(60),-190 - random(-10)); 
     numParticles += 1;
+    numParticles = numParticles % maxParticles;
   }
   
   
@@ -101,6 +105,8 @@ void update(float dt){
   
   for (int i = 0; i < numParticles; i++){
     
+    time[i]++;
+
     Vec2 acc = gravity; //Gravity
     vel[i].add(gravity);
     pos[i].add(vel[i].times(dt)); //Update position based on velocity
@@ -130,7 +136,9 @@ void update(float dt){
 
       // impart momentum on blue balls
       if (obstacleVel.length() == 0) {continue;}
-      vel[i].add(obstacleVel.times(dot(obstacleVel, normal) / (obstacleVel.length() * normal.length())));
+      Vec2 b = obstacleVel.times(dot(obstacleVel, normal) / (obstacleVel.length() * normal.length()));
+      vel[i].add(b);
+      bounce[i] = b;
 
     }
   }
@@ -169,8 +177,10 @@ void draw(){
   
   background(255); //White background
   stroke(0,0,0);
-  fill(0,0,255); 
   for (int i = 0; i < numParticles; i++){
+    int green = (int) (bounce[i] == null ? 0 : bounce[i].length());
+
+    fill(255 - time[i], green, time[i]); 
     circle(pos[i].x, pos[i].y, r*2); //(x, y, diameter)
   }
   
