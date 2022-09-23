@@ -45,13 +45,13 @@ CHALLENGE:
   3. Add a static obstacle for the agent to avoid (hint: treat it as an agent with 0 velocity).
 */
 
-static int maxNumAgents = 3;
-int numAgents = 3;
+static int maxNumAgents = 5;
+int numAgents = 5;
 
-float k_goal = 50;  //TODO: Tune this parameter to agent stop naturally on their goals
-float k_avoid = 100;
+float k_goal = 20;  //TODO: Tune this parameter to agent stop naturally on their goals
+float k_avoid = 300;
 float agentRad = 40;
-float goalSpeed = 50;
+float goalSpeed = 200;
 
 //The agent states
 Vec2[] agentPos = new Vec2[maxNumAgents];
@@ -72,6 +72,13 @@ void setup(){
   goalPos[0] = new Vec2(200,420);
   goalPos[1] = new Vec2(120,120);
   goalPos[2] = new Vec2(220,220);
+
+  // Add agents and goals
+  agentPos[3] = new Vec2(200,200);
+  agentPos[4] = new Vec2(300,300);
+
+  goalPos[3] = new Vec2(400,400);
+  goalPos[4] = new Vec2(50,50);
  
   //Set initial velocities to cary agents towards their goals
   for (int i = 0; i < numAgents; i++){
@@ -87,7 +94,7 @@ float computeTTC(Vec2 pos1, Vec2 vel1, float radius1, Vec2 pos2, Vec2 vel2, floa
   if (pos2.minus(pos1).length() <= radius1 + radius2) {
     return 0;
   }
-  float time = rayCircleIntersectTime(pos1, radius1 + radius2, pos2, vel1.minus(vel2));
+  float time = rayCircleIntersectTime(pos1, radius1 + radius2, pos2, vel2.minus(vel1));
   return time;
 }
 
@@ -135,6 +142,18 @@ Vec2 computeAgentForces(int id){
 
 //Update agent positions & velocities based acceleration
 void moveAgent(float dt){
+
+  float total_dist = 0;
+  for (int i = 0; i < numAgents; i++) {
+    total_dist += agentPos[i].minus(goalPos[i]).length();
+  }
+
+  if (total_dist < 5) {return;}
+
+
+  float t = computeTTC(agentPos[0], agentVel[0], agentRad, agentPos[1], agentVel[1], agentRad);
+  println(t);
+
   //Compute accelerations for every agents
   for (int i = 0; i < numAgents; i++){
     agentAcc[i] = computeAgentForces(i);
@@ -164,7 +183,7 @@ void draw(){
   //Draw the green agents
   fill(20,200,150);
   for (int i = 0; i < numAgents; i++){
-    circle(agentPos[i].x, agentPos[i].y, agentRad*2);
+    circle(agentPos[i].x, agentPos[i].y, agentRad*2 * 0.7);
   }
 }
 
