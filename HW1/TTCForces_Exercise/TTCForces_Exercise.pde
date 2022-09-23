@@ -52,6 +52,8 @@ float k_goal = 20;  //TODO: Tune this parameter to agent stop naturally on their
 float k_avoid = 300;
 float agentRad = 40;
 float goalSpeed = 200;
+// float max_force = 200;
+// float max_vel = 200;
 
 //The agent states
 Vec2[] agentPos = new Vec2[maxNumAgents];
@@ -152,7 +154,6 @@ void moveAgent(float dt){
 
 
   float t = computeTTC(agentPos[0], agentVel[0], agentRad, agentPos[1], agentVel[1], agentRad);
-  println(t);
 
   //Compute accelerations for every agents
   for (int i = 0; i < numAgents; i++){

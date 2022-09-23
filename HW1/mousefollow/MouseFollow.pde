@@ -84,7 +84,6 @@ void draw(){
   translate(pos.x, pos.y);
 
   float angle = atan(vel.y / vel.x);
-  println(angle);
 
   if (Float.isNaN(angle)) {
     angle = last_angle;
