@@ -49,7 +49,6 @@ Vec2 vel; //Circle velocity
 float r;  //Circle radius
 
 float speed = 100;
-float max_acc = 5;
 
 void update(float dt){
   Vec2 mousePos = new Vec2(mouseX, mouseY);
