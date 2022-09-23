@@ -127,6 +127,11 @@ void update(float dt){
       pos[i] = spherePos.plus(normal.times(sphereRadius+r).times(1.01));
       Vec2 velNormal = normal.times(dot(vel[i],normal));
       vel[i].subtract(velNormal.times(1 + COR));
+
+      // impart momentum on blue balls
+      if (obstacleVel.length() == 0) {continue;}
+      vel[i].add(obstacleVel.times(dot(obstacleVel, normal) / (obstacleVel.length() * normal.length())));
+
     }
   }
   
