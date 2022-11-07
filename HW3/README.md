@@ -3,6 +3,9 @@ Daniel Chang
 
 ## Methods
 I used gradient descent with momentum based gradient updates, and gradient scaling (with momentum updates).
+(I toggled gradient scaling momentum on and off for some networks)
+I also messed with the loss function (using squared error vs abs error)
+
 I implemented a Matrix class that implements basic matrix operations and basic matrix calculus. Using this matrix class, I implemented a Network/Layer class that handles the forward and backward propagation.
 
 For each network, I tested a bunch of hyperparameters and kept the best performing ones.
@@ -18,6 +21,6 @@ where networks.txt is the list of network weights/biases, and sample_inputs.txt 
 
 To find the optimal inputs, please run:
 ```bash
-python3 network.py networks.txt solution.txt -test
+python3 network.py networks.txt solution.txt -train
 ```
 where networks.txt is the list of network weights/biases, and solution.txt is the file to be created that will contain the optimal inputs

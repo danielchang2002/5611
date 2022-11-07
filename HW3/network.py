@@ -210,9 +210,10 @@ def find_best_input(f, solution_file, params):
   else:
     input_ = Matrix.random((layers[0].w.shape[1], 1))
 
-
   output = net.forward(input_)
   dL_dOutput = output.transpose()
+  if "abs_loss" in params:
+    dL_dOutput = dL_dOutput.abs_derivative()
   grad = net.backward(dL_dOutput)
   grad_scale = grad.times(grad).transpose().apply(lambda x : 1 / math.sqrt(x + 0.00001))
 
@@ -223,6 +224,8 @@ def find_best_input(f, solution_file, params):
 
     # backward pass
     dL_dOutput = output.transpose()
+    if "abs_loss" in params:
+      dL_dOutput = dL_dOutput.abs_derivative()
     cur_grad = net.backward(dL_dOutput)
 
     # Compute gradient w/ momentum
@@ -242,6 +245,7 @@ def find_best_input(f, solution_file, params):
   assert(input_.is_finite())
   solution_file.write(str(input_).replace("[", "").replace("]", "").replace(" ", "") + "\n")
 
+  output = net.forward(input_)
   print(output.sum())
 
 def main():
@@ -300,7 +304,7 @@ def main():
       },
       {
         # cost = very small 
-        "iters" : 10000,
+        "iters" : 9999,
         "alpha" : 0.000001,
         "gradient_scaling" : True,
         "beta": 0.99,
@@ -315,29 +319,29 @@ def main():
         "beta2" : 0.1
       },
       {
-        # cost = 5412
-        "iters" : 1000,
-        "alpha" : 0.00000001,
+        # cost = 848
+        "iters" : 9999,
+        "alpha" : 0.000000001,
         "gradient_scaling" : False,
-        "beta": 0.99,
+        "beta": 0.4,
         "beta2" : 0
       },
       {
-        # cost = 26215
-        "iters" : 1000,
-        "alpha" : 0.01,
-        "gradient_scaling" : True,
-        "beta": 0.99,
-        "beta2" : 0
-      },
-      {
-        # cost = 54666
-        "iters" : 6000,
+        # cost = 18974
+        "iters" : 9999,
         "alpha" : 0.0001,
         "gradient_scaling" : True,
-        "init" : [[-0.9573086,0.74159217,1.4531386,1.2332433,-0.09257837,-0.3874185,1.2289859,0.13414156,1.6847363,0.8823673,1.035392,0.58404857,-1.2132347,0.63645047,0.17155781,2.298083,0.99662906,0.7447446,-0.3435399,1.1855184,1.8224814,2.3371882,1.4729872,0.83334017,0.7897669,0.69711643,1.0678027,0.06026873,1.2546061,1.2088302]],
         "beta": 0.99,
-        "beta2" : 0.9
+        "beta2" : 0
+      },
+      {
+        # cost = 320
+        "iters" : 11999,
+        "alpha" : 0.0001,
+        "gradient_scaling" : True,
+        "beta": 0.6,
+        "beta2" : 0.99,
+        "abs_loss" : True,
       },
     ]
     with open(sys.argv[1]) as network_file:
